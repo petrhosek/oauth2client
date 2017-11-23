@@ -157,7 +157,7 @@ class _AuthReferenceServer(threading.Thread):
             to_read = n - len(extra)
             if to_read > 0:
                 resp_buffer += _helpers._from_bytes(
-                    s.recv(to_read, socket.MSG_WAITALL))
+                    _helpers._recvall(s, to_read))
             if resp_buffer != devshell.CREDENTIAL_INFO_REQUEST_JSON:
                 self.bad_request = True
             response_len = len(self.response)
@@ -190,7 +190,7 @@ class DevshellCredentialsTests(unittest.TestCase):
             header = sock.recv(6).decode()
             len_str, result = header.split('\n', 1)
             to_read = int(len_str) - len(result)
-            result += sock.recv(to_read, socket.MSG_WAITALL).decode()
+            result += _helpers._recvall(sock, to_read).decode()
 
         self.assertTrue(auth_server.bad_request)
         self.assertEqual(result, response_message)

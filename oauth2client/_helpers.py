@@ -339,3 +339,16 @@ def _urlsafe_b64decode(b64string):
     b64string = _to_bytes(b64string)
     padded = b64string + b'=' * (4 - len(b64string) % 4)
     return base64.urlsafe_b64decode(padded)
+
+
+def _recvall(sock, size):
+    buffer = bytearray(size)
+    view = memoryview(buffer)
+    pos = 0
+    while pos < size:
+        read = sock.recv_into(view[pos:], size - pos)
+        if not read:
+            raise EOFError("%s bytes read on a total of %s expected bytes"
+                           % (pos, size))
+        pos += read
+    return bytes(buffer)

@@ -89,7 +89,7 @@ def _SendRecv():
     len_str, json_str = header.split('\n', 1)
     to_read = int(len_str) - len(json_str)
     if to_read > 0:
-        json_str += sock.recv(to_read, socket.MSG_WAITALL).decode()
+        json_str += _helpers._recvall(sock, to_read).decode()
 
     return CredentialInfoResponse(json_str)
 
